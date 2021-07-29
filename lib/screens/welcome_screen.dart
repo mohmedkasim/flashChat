@@ -8,11 +8,46 @@ class WelcomeScreen extends StatefulWidget {
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
-class _WelcomeScreenState extends State<WelcomeScreen> {
+class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation animation;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller = AnimationController(
+        duration: const Duration(seconds: 3), vsync: this);
+
+    animation = ColorTween(begin: Colors.red, end: Colors.blue).animate(controller);
+    // animation = CurvedAnimation(parent: controller, curve: Curves.decelerate);
+
+
+    controller.forward();
+
+    // animation.addStatusListener((status) {
+    //   if (status == AnimationStatus.completed){
+    //     controller.reverse(from: 1.0);
+    //   } else if (status == AnimationStatus.dismissed){
+    //     controller.forward();
+    //   }
+    // });
+    // controller.reverse(from: 1.0);
+    controller.addListener(() {
+      setState(() {});
+      // print(controller.value);
+    });
+
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: animation.value,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
@@ -25,7 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   tag: "logo",
                   child: Container(
                     child: Image.asset('images/logo.png'),
-                    height: 60.0,
+                    height: 60,
                   ),
                 ),
                 Text(
