@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/components/roundedButton.dart';
+import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../constants.dart';
@@ -10,6 +12,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
+  late String username;
+  late String password;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
               keyboardType: TextInputType.emailAddress,
               textAlign: TextAlign.center,
               onChanged: (value) {
-                //Do something with the user input.
+                username = value;
               },
               decoration: kTextField.copyWith(
                 hintText: 'Enter your email',
@@ -47,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 obscureText: true,
                 textAlign: TextAlign.center,
                 onChanged: (value) {
-                  //Do something with the user input.
+                  password = value;
                 },
                 decoration: kTextField.copyWith(
                   hintText: 'Enter your password.',
@@ -56,7 +61,22 @@ class _LoginScreenState extends State<LoginScreen> {
               height: 24.0,
             ),
             CustomButton(
-                text: "Log In", color: Colors.lightBlueAccent, onPress: () {}),
+                text: "Log In",
+                color: Colors.lightBlueAccent,
+                onPress: () async {
+                  try {
+                    final login = await _auth.signInWithEmailAndPassword(
+                        email: username, password: password);
+                    if (login != null) {
+                      Navigator.pushNamed(context, ChatScreen.id);
+                    } else {
+                      print('login wrong');
+                    }
+                  } catch (x) {
+                    print('long wrong');
+                    print(x);
+                  }
+                }),
           ],
         ),
       ),
